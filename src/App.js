@@ -1,25 +1,49 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      items: ['Item 1...', 'Item 2...', 'Item 3...', 'Item 4...'],
+    };
+    this.handleAdd = this.handleAdd.bind(this);
+  }
+  handleAdd() {
+    var newItems = this.state.items.concat([prompt('Create New Item')]);
+    this.setState({ items: newItems });
+  }
+  handleRemove(i) {
+    var newItems = this.state.items.slice();
+    newItems.splice(i, 1);
+    this.setState({ items: newItems });
+  }
+  render() {
+    var items = this.state.items.map(
+      function (item, i) {
+        return (
+          <div key={item} onClick={this.handleRemove.bind(this, i)}>
+            {item}
+          </div>
+        );
+      }.bind(this)
+    );
+
+    return (
+      <div>
+        <button onClick={this.handleAdd}>Add Item</button>
+
+        <ReactCSSTransitionGroup
+          transitionName="example"
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={500}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+          {items}
+        </ReactCSSTransitionGroup>
+      </div>
+    );
+  }
 }
-
 export default App;
